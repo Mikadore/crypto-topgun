@@ -84,3 +84,38 @@ Similarly, we can also define an encoding scheme for based on the caesar cipher 
 In my implementation, for any given ciphertext, the encoded output only changes supported letters,
 shifting them according to the caesar cipher. Uppercase and lowercase letters are essentially treated
 as different alphabets. With N=2, `'a'` will be mapped to `c`, and `'A'` to `'C'`. 
+
+## CLI
+
+I've created a simple CLI for the caesar encoding/decoding:
+```
+caesar 
+caesar is a cli utility for encoding/decoding text using the caesar cipher
+
+USAGE:
+    caesar [OPTIONS] --key <Key> <--decode|--encode>
+
+OPTIONS:
+    -c, --czech                Use the czech alphabet
+    -d, --decode               Decode the input
+    -e, --encode               Encode the input
+    -h, --help                 Print help information
+    -i, --in <Input File>      Use file as input
+    -k, --key <Key>            The shift amount for the caesar cipher
+    -o, --out <Output File>    Write output to file instead of stdout
+
+The program encodes/decodes valid utf8 using the caesar cipher.You need to provide a key, i.e. the
+amount to shift by.By default, the program reads from stdin and writes to stdout.Any non-alphabetic
+character will not be changed by either decoding or encoding.Lowercase and uppercase characters are
+encoded separately, i.e. with key = 1,'A' becomes 'B' and 'a' becomes 'b'.Use -c to enable the czech
+alphabet. This will use czech letters in the order 'AÁBCČDĎEÉĚFGHIÍJKLMNŇOÓPQRŘSŠTŤUÚŮVWXYÝZŽ'(as
+defined in unicode, same order for lowercase), exluding the letter 'ch'
+```
+
+Try it! Example:
+```
+cargo run -- --in samples/test.cz -k 13 -ce | diff - samples/test.cz.13
+```
+```
+cargo run -- --in samples/test.en.13 -k 13 -d
+```
