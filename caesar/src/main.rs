@@ -1,5 +1,5 @@
 #![feature(io_read_to_string)]
-use caesar::{caesar_decode, caesar_encode, cz_caesar_decode, cz_caesar_encode, caesar_rot};
+use caesar::{caesar_decode, caesar_encode, caesar_rot, cz_caesar_decode, cz_caesar_encode};
 use clap::{Arg, ArgGroup, Command};
 
 fn main() {
@@ -69,9 +69,12 @@ fn main() {
              Alternatively, use -b to shift the inputs bytes by the amount given with -k")
         .get_matches();
 
-    let key = matches.value_of("Key").unwrap().parse::<u32>().expect("Key must be a positive number");
-    let key = (key % 26) as u8;
-        
+    let key = matches
+        .value_of("Key")
+        .unwrap()
+        .parse::<u8>()
+        .expect("Key must be in the range 0;255");
+
     if matches.is_present("Binary") {
         use std::io::{Read, Write};
         let input = if let Some(file) = matches.value_of("Input File") {
