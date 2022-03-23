@@ -114,8 +114,11 @@ defined in unicode, same order for lowercase), exluding the letter 'ch'
 
 Try it! Example:
 ```
-cargo run -- --in samples/test.cz -k 13 -ce | diff - samples/test.cz.13
+$ cargo run -- --in samples/test.cz -k 13 -ce | diff - samples/test.cz.13
 ```
 ```
-cargo run -- --in samples/test.en.13 -k 13 -d
+$ cargo run -- --in samples/test.en.13 -k 13 -d
+```
+```
+$ printf "\0\1\2\3\4\5" | cargo run -- -bk 1 | hexdump -C
 ```

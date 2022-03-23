@@ -1,4 +1,4 @@
-use super::{caesar_decode, caesar_encode, cz_caesar_decode, cz_caesar_encode};
+use super::{caesar_decode, caesar_encode, caesar_rot, cz_caesar_decode, cz_caesar_encode};
 
 #[test]
 fn identity_properties() {
@@ -37,7 +37,7 @@ fn identity_properties() {
             text,
             "ROT13(ROT13(x)) = x"
         );
-        for shift in 1..=4*26 {
+        for shift in 1..=4 * 26 {
             assert_eq!(
                 caesar_decode(&caesar_encode(text, shift), shift),
                 text,
@@ -194,4 +194,25 @@ fn cz_abc_shift() {
             shift
         );
     }
+}
+
+#[test]
+fn rot_test() {
+    let caesar = b"abcdef";
+
+    assert_eq!(
+        caesar_encode(std::str::from_utf8(caesar).unwrap(), 13).as_bytes(),
+        caesar_rot(caesar, 13),
+        "Due to ascii, there result of these operations in this case should be the same"
+    );
+
+    let iota = (0..=u8::MAX).collect::<Vec<u8>>();
+    let shifted = {
+        let mut copy = iota.clone();
+        copy.rotate_right(1);
+        copy
+    };
+
+    assert_eq!(caesar_rot(&iota, u8::MAX), shifted);
+    assert_eq!(caesar_rot(&shifted, 1), iota);
 }

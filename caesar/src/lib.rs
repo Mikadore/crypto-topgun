@@ -121,7 +121,7 @@ pub fn cz_caesar_encode(s: &str, shift: u8) -> String {
                 'ý' => lowercase[38],
                 'z' => lowercase[39],
                 'ž' => lowercase[40],
-                _ => c
+                _ => c,
             }
         })
         .collect()
@@ -130,6 +130,11 @@ pub fn cz_caesar_encode(s: &str, shift: u8) -> String {
 /// Takes a string and decodes it using the caesar cipher (czech alphabet, treating ch as 2 separate letters)
 pub fn cz_caesar_decode(s: &str, shift: u8) -> String {
     cz_caesar_encode(s, 41 - shift % 41)
+}
+
+/// Takes a byte slice and shifts each byte by `shift` akin to ROT13
+pub fn caesar_rot(m: &[u8], shift: u8) -> Vec<u8> {
+    m.iter().map(|&b| b.wrapping_add(shift)).collect()
 }
 
 #[cfg(test)]

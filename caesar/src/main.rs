@@ -1,5 +1,5 @@
 #![feature(io_read_to_string)]
-use caesar::{caesar_decode, caesar_encode, cz_caesar_decode, cz_caesar_encode};
+use caesar::{caesar_decode, caesar_encode, cz_caesar_decode, cz_caesar_encode, caesar_rot};
 use clap::{Arg, ArgGroup, Command};
 
 fn main() {
@@ -45,9 +45,16 @@ fn main() {
                 .short('e')
                 .help("Encode the input")
         )
+        .arg(
+            Arg::new("Binary")
+                .long("binary")
+                .short('b')
+                .help("Shift the input's bits by {Key}")
+                .conflicts_with("Czech")
+        )
         .group(
             ArgGroup::new("Mode")
-                .args(&["Decode", "Encode"])
+                .args(&["Decode", "Encode", "Binary"])
                 .required(true),
         )
         .after_help(
@@ -58,11 +65,37 @@ fn main() {
              Lowercase and uppercase characters are encoded separately, i.e. with key = 1,\
              'A' becomes 'B' and 'a' becomes 'b'.\
              Use -c to enable the czech alphabet. This will use czech letters in the order 'AÁBCČDĎEÉĚFGHIÍJKLMNŇOÓPQRŘSŠTŤUÚŮVWXYÝZŽ'\
-             (as defined in unicode, same order for lowercase), exluding the letter 'ch'")
+             (as defined in unicode, same order for lowercase), exluding the letter 'ch'.\n\n\
+             Alternatively, use -b to shift the inputs bytes by the amount given with -k")
         .get_matches();
 
     let key = matches.value_of("Key").unwrap().parse::<u32>().expect("Key must be a positive number");
     let key = (key % 26) as u8;
+        
+    if matches.is_present("Binary") {
+        use std::io::{Read, Write};
+        let input = if let Some(file) = matches.value_of("Input File") {
+            std::fs::read(file).expect("Couldn't read inout file")
+        } else {
+            let mut v = vec![];
+            std::io::stdin()
+                .read_to_end(&mut v)
+                .expect("I/O error reading stdin");
+            v
+        };
+
+        let out = caesar_rot(&input, key);
+
+        if let Some(outfile) = matches.value_of("Output File") {
+            std::fs::write(outfile, &out).expect("Error writing output file");
+        } else {
+            std::io::stdout()
+                .write_all(&out)
+                .expect("I/O error writing to stdout");
+        }
+
+        std::process::exit(0);
+    }
 
     let input = if let Some(file) = matches.value_of("Input File") {
         std::fs::read_to_string(file).expect("Couldn't read input file")
@@ -91,5 +124,4 @@ fn main() {
     } else {
         print!("{}", output)
     }
-
 }
