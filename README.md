@@ -3,6 +3,17 @@
 This repository will contain several different examples of cryptographic 
 systems, a brief overview of them, and an implementation/example of each.
 
+## Order of contents
+
+This is the order in which different technologies/ciphers/topics were added:
+
+1. [Caesar cipher](caesar)
+
+In general, examples should be self contained, and they depend on each other 
+they should be referencing said dependance. However, the order of creation
+does serve as some sort of progression in the topic of Cryptography,
+and the concepts tend to build ontop of each other.
+
 ## Disclaimer
 
 Cryptography is a sensitive subject, breaks in major cryptographic 
